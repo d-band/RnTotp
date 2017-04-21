@@ -124,6 +124,7 @@ class TotpPage extends Component {
     });
   }
   render() {
+    const { ds, time } = this.state;
     const copy = (text) => {
       Clipboard.setString(text);
       Alert.alert('提示', '已经复制到剪切板: ' + text);
@@ -150,7 +151,7 @@ class TotpPage extends Component {
               <Text style={styles.title}>{item.otp}</Text>
               <View style={styles.itemContent}>
                 <Text style={styles.user}>{item.name}</Text>
-                <CircleProgress radius={8} percent={this.state.time / 30 * 100} />
+                <CircleProgress radius={8} percent={time / 30 * 100} />
               </View>
             </View>
           </TouchableOpacity>
@@ -158,7 +159,6 @@ class TotpPage extends Component {
       );
     };
     const content = () => {
-      const { ds } = this.state;
       if (ds.getRowCount() === 0) {
         return (
           <View style={styles.noData}>
