@@ -5,6 +5,7 @@ import { Actions } from "react-native-router-flux";
 import Camera from 'react-native-camera';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import parse from 'url-parse';
+import { decode } from 'botp/base32';
 
 const styles = StyleSheet.create({
   container: {
@@ -81,7 +82,7 @@ class ScanPage extends Component {
     
     if (protocol === 'otpauth:' && host === 'totp') {
       const name = pathname.replace(/^\//, '');
-      const { secret } = query;
+      const secret = decode(query.secret);
       dispatch({
         type: 'totp/add',
         payload: { name, secret }
