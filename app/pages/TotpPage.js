@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import botp from 'botp';
+import { totp } from 'botp';
 import Swipeout from 'react-native-swipeout';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CircleProgress from '../components/CircleProgress';
@@ -74,15 +74,35 @@ class TotpPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      time: second()
+      time: second(),
+      ds: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2
+      })
     };
+  }
+  resetDS(props) {
+    const { ds } = this.state;
+    const list = props.totp.list.map(v => {
+      return { ...v, otp: totp.gen(v.secret) }
+    });
+    this.setState({
+      ds: ds.cloneWithRows(list)
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+    this.resetDS(nextProps);
   }
   componentDidMount() {
     this.timer = setInterval(() => {
-      this.setState({
-        time: second()
-      });
+      const time = second();
+      if (time === 0) {
+        this.resetDS(this.props);
+      }
+      this.setState({ time });
     }, 500);
+    // init otp list
+    this.resetDS(this.props);
+    // init navbar
     Icon.getImageSource('md-qr-scanner', 40, '#fff').then(img => {
       Actions.refresh({
         rightButtonImage: img,
@@ -104,8 +124,6 @@ class TotpPage extends Component {
     });
   }
   render() {
-    const { dispatch, totp } = this.props;
-    const { list } = totp;
     const copy = (text) => {
       Clipboard.setString(text);
       Alert.alert('提示', '已经复制到剪切板: ' + text);
@@ -129,7 +147,7 @@ class TotpPage extends Component {
           backgroundColor="transparent">
           <TouchableOpacity onPress={() => copy(item.secret)}>
             <View style={styles.containerItem}>
-              <Text style={styles.title}>{botp.totp.gen(item.secret)}</Text>
+              <Text style={styles.title}>{item.otp}</Text>
               <View style={styles.itemContent}>
                 <Text style={styles.user}>{item.name}</Text>
                 <CircleProgress radius={8} percent={this.state.time / 30 * 100} />
@@ -140,7 +158,8 @@ class TotpPage extends Component {
       );
     };
     const content = () => {
-      if (list.length === 0) {
+      const { ds } = this.state;
+      if (ds.getRowCount() === 0) {
         return (
           <View style={styles.noData}>
             <Icon name="ios-filing-outline" size={100} color="#999" />
@@ -150,13 +169,10 @@ class TotpPage extends Component {
           </View>
         );
       }
-      const ds = new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2
-      });
       return (
         <ListView
           initialListSize={1}
-          dataSource={ds.cloneWithRows(list)}
+          dataSource={ds}
           renderRow={renderRow}
           style={styles.listView}
         />
