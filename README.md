@@ -14,6 +14,6 @@ RnTotp
 
 ## Screenshot
 
-![TotpPage](./screenshot/image-1.png =280x)
-![ScanPage](./screenshot/image-2.png =280x)
-![Nodata](./screenshot/image-3.png =280x)
+<img src="./screenshot/image-1.png" width="280">
+<img src="./screenshot/image-1.png" width="280">
+<img src="./screenshot/image-1.png" width="280">
