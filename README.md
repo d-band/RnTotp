@@ -14,6 +14,4 @@ RnTotp
 
 ## Screenshot
 
-<img src="./screenshot/image-1.png" width="280">
-<img src="./screenshot/image-1.png" width="280">
-<img src="./screenshot/image-1.png" width="280">
+<img src="./screenshot/image-1.png" width="300"><img src="./screenshot/image-1.png" width="300"><img src="./screenshot/image-1.png" width="300">
