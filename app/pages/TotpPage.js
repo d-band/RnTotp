@@ -73,21 +73,19 @@ const second = () => (new Date()).getUTCSeconds() % 30;
 class TotpPage extends Component {
   constructor(props) {
     super(props);
+    this.ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
     this.state = {
       time: second(),
-      ds: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 !== r2
-      })
+      list: []
     };
   }
   resetDS(props) {
-    const { ds } = this.state;
     const list = props.totp.list.map(v => {
       return { ...v, otp: totp.gen(v.secret) }
     });
-    this.setState({
-      ds: ds.cloneWithRows(list)
-    });
+    this.setState({ list });
   }
   componentWillReceiveProps(nextProps) {
     this.resetDS(nextProps);
@@ -124,7 +122,7 @@ class TotpPage extends Component {
     });
   }
   render() {
-    const { ds, time } = this.state;
+    const { list, time } = this.state;
     const copy = (text) => {
       Clipboard.setString(text);
       Alert.alert('提示', '已经复制到剪切板: ' + text);
@@ -159,7 +157,7 @@ class TotpPage extends Component {
       );
     };
     const content = () => {
-      if (ds.getRowCount() === 0) {
+      if (list.length === 0) {
         return (
           <View style={styles.noData}>
             <Icon name="ios-filing-outline" size={100} color="#999" />
@@ -172,7 +170,7 @@ class TotpPage extends Component {
       return (
         <ListView
           initialListSize={1}
-          dataSource={ds}
+          dataSource={this.ds.cloneWithRows(list)}
           renderRow={renderRow}
           style={styles.listView}
         />
