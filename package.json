@@ -10,16 +10,16 @@
   },
   "dependencies": {
     "botp": "^2.3.2",
-    "react": "^16.0.0-alpha.6",
-    "react-native": "^0.43.3",
+    "react": "16.0.0-alpha.6",
+    "react-native": "0.43.3",
     "react-native-camera": "^0.7.0",
-    "react-native-router-flux": "^3.38.0",
-    "react-native-simple-store": "^1.1.0",
+    "react-native-router-flux": "https://github.com/d-band/react-native-router-flux.git",
     "react-native-swipeout": "^2.0.13",
     "react-native-vector-icons": "^4.0.1",
     "react-redux": "^5.0.4",
+    "redux-persist": "^4.6.0",
     "url-parse": "^1.1.8",
-    "yax": "0.0.4"
+    "yax": "0.0.6"
   },
   "devDependencies": {
     "babel-jest": "^19.0.0",

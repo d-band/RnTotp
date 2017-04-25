@@ -144,7 +144,7 @@ class TotpPage extends Component {
         <Swipeout right={btns}
           autoClose
           backgroundColor="transparent">
-          <TouchableOpacity onPress={() => copy(item.secret)}>
+          <TouchableOpacity onPress={() => copy(item.otp)}>
             <View style={styles.containerItem}>
               <Text style={styles.title}>{item.otp}</Text>
               <View style={styles.itemContent}>
