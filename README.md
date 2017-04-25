@@ -7,11 +7,11 @@ RnTotp
 - `react-native@0.43.3`
 - `react-native-camera`
 - `react-native-router-flux`
-- `react-native-simple-store`
 - `react-native-swipeout`
 - `react-native-vector-icons`
 - `react-redux`
+- `redux-persist`
 
 ## Screenshot
 
-<img src="./screenshot/image-1.png" width="280"><img src="./screenshot/image-2.png" width="280"><img src="./screenshot/image-3.png" width="280">
+![Screenshot](./screenshot/image.png)

@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     position: 'absolute',
-    borderColor: '#2db7f5'
+    borderColor: '#2db7f5',
+    backgroundColor: 'transparent'
   },
   lt: {
     left: 0,
