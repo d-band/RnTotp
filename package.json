@@ -6,6 +6,8 @@
     "start": "react-native start",
     "dev:android": "react-native run-android",
     "dev:ios": "react-native run-ios",
+    "build:ios": "react-native run-ios --configuration Release",
+    "build:android": "cd android && ./gradlew assembleRelease",
     "test": "jest"
   },
   "dependencies": {
