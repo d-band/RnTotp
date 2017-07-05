@@ -10,21 +10,22 @@
   },
   "dependencies": {
     "botp": "^2.3.2",
-    "react": "16.0.0-alpha.6",
-    "react-native": "0.43.3",
-    "react-native-camera": "^0.7.0",
-    "react-native-router-flux": "https://github.com/d-band/react-native-router-flux.git",
+    "prop-types": "^15.5.10",
+    "react": "16.0.0-alpha.12",
+    "react-native": "0.45.1",
+    "react-native-camera": "^0.9.4",
+    "react-native-router-flux": "^3.41.0",
     "react-native-swipeout": "^2.0.13",
     "react-native-vector-icons": "^4.0.1",
     "react-redux": "^5.0.4",
     "redux-persist": "^4.6.0",
     "url-parse": "^1.1.8",
-    "yax": "0.0.6"
+    "yax": "0.3.1"
   },
   "devDependencies": {
-    "babel-jest": "^19.0.0",
-    "babel-preset-react-native": "^1.9.1",
-    "jest": "^19.0.2",
+    "babel-jest": "^20.0.3",
+    "babel-preset-react-native": "^2.0.0",
+    "jest": "^20.0.4",
     "react-test-renderer": "^16.0.0-alpha.6"
   },
   "jest": {

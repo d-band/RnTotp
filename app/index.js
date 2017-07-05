@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Scene } from 'react-native-router-flux';
 import { connect, Provider } from 'react-redux';
-import { StyleSheet, Navigator } from 'react-native';
+import { StyleSheet } from 'react-native';
 import store from './store';
 import TotpPage from './pages/TotpPage';
 import ScanPage from './pages/ScanPage';
@@ -18,8 +18,7 @@ const getSceneStyle = (props, computedProps) => {
     shadowRadius: null
   };
   if (computedProps.isActive) {
-    const nh = Navigator.NavigationBar.Styles.General.TotalNavHeight;
-    style.marginTop = computedProps.hideNavBar ? 0 : nh;
+    style.marginTop = computedProps.hideNavBar ? 0 : 64;
     style.marginBottom = computedProps.hideTabBar ? 0 : 50;
   }
   return style;
@@ -44,7 +43,7 @@ const App = () => {
         <Scene key="root">
           <Scene
             key="main"
-            title="身份验证器"
+            title="Authenticator"
             initial
             hideTabBar
             component={TotpPage}

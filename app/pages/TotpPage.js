@@ -69,23 +69,27 @@ const styles = StyleSheet.create({
 });
 
 const second = () => (new Date()).getUTCSeconds() % 30;
-
+const genList = (ds, list) => {
+  return ds.cloneWithRows(
+    list.map(v => ({ ...v, otp: totp.gen(v.secret) }))
+  );
+};
 class TotpPage extends Component {
   constructor(props) {
     super(props);
-    this.ds = new ListView.DataSource({
+    const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     });
     this.state = {
       time: second(),
-      list: []
+      ds: genList(ds, props.list)
     };
   }
   resetDS(props) {
-    const list = props.totp.list.map(v => {
-      return { ...v, otp: totp.gen(v.secret) }
+    const { ds } = this.state;
+    this.setState({
+      ds: genList(ds, props.list)
     });
-    this.setState({ list });
   }
   componentWillReceiveProps(nextProps) {
     this.resetDS(nextProps);
@@ -122,10 +126,10 @@ class TotpPage extends Component {
     });
   }
   render() {
-    const { list, time } = this.state;
+    const { ds, time } = this.state;
     const copy = (text) => {
       Clipboard.setString(text);
-      Alert.alert('提示', '已经复制到剪切板: ' + text);
+      Alert.alert('Tips', 'Have copied to clipboard: ' + text);
     };
     const TrashIcon = () => {
       return (
@@ -157,7 +161,7 @@ class TotpPage extends Component {
       );
     };
     const content = () => {
-      if (list.length === 0) {
+      if (ds.getRowCount() === 0) {
         return (
           <View style={styles.noData}>
             <Icon name="ios-filing-outline" size={100} color="#999" />
@@ -170,7 +174,7 @@ class TotpPage extends Component {
       return (
         <ListView
           initialListSize={1}
-          dataSource={this.ds.cloneWithRows(list)}
+          dataSource={ds}
           renderRow={renderRow}
           style={styles.listView}
         />
@@ -184,4 +188,8 @@ class TotpPage extends Component {
   }
 }
 
-export default connect(({ totp }) => ({ totp }))(TotpPage);
+const mapState = (state) => {
+  return { list: state.totp.list };
+}
+
+export default connect(mapState)(TotpPage);
