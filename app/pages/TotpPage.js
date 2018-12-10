@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  ListView,
+  FlatList,
   Text,
   TouchableOpacity,
   View,
   Alert,
-  Clipboard,
-  Platform
+  Clipboard
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Actions } from 'react-native-router-flux';
-import { totp } from 'botp';
 import Swipeout from 'react-native-swipeout';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CircleProgress from '../components/CircleProgress';
 
 const styles = StyleSheet.create({
+  headerBtn: {
+    marginHorizontal: 11
+  },
   container: {
     flex: 1,
     flexDirection: 'column'
@@ -69,52 +69,39 @@ const styles = StyleSheet.create({
 });
 
 const second = () => (new Date()).getUTCSeconds() % 30;
-const genList = (ds, list) => {
-  return ds.cloneWithRows(
-    list.map(v => ({ ...v, otp: totp.gen(v.secret) }))
-  );
-};
 class TotpPage extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerRight: (
+        <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.push('Scan')}>
+          <Icon name="md-qr-scanner" size={23} color="#fff" />
+        </TouchableOpacity>
+      )
+    };
+  };
   constructor(props) {
     super(props);
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
     this.state = {
-      time: second(),
-      ds: genList(ds, props.list)
+      time: second()
     };
   }
-  resetDS(props) {
-    const { ds } = this.state;
-    this.setState({
-      ds: genList(ds, props.list)
+  updateOTP() {
+    this.props.dispatch({
+      type: 'totp/update'
     });
-  }
-  componentWillReceiveProps(nextProps) {
-    this.resetDS(nextProps);
   }
   componentDidMount() {
     this.timer = setInterval(() => {
       const time = second();
-      if (time === 0) {
-        this.resetDS(this.props);
-      }
-      this.setState({ time });
-    }, 500);
-    // init otp list
-    this.resetDS(this.props);
-    // init navbar
-    Icon.getImageSource('md-qr-scanner', 40, '#fff').then(img => {
-      Actions.refresh({
-        rightButtonImage: img,
-        rightButtonIconStyle: {
-          width: 20,
-          height: 20
-        },
-        onRight: () => Actions.scan()
+      this.setState(prev => {
+        if (prev.time > time) {
+          this.updateOTP();
+        }
+        return { time };
       });
-    });
+    }, 500);
+    // init update otp list
+    this.updateOTP();
   }
   componentWillUnmount() {
     clearInterval(this.timer);
@@ -126,7 +113,8 @@ class TotpPage extends Component {
     });
   }
   render() {
-    const { ds, time } = this.state;
+    const { time } = this.state;
+    const { list } = this.props;
     const copy = (text) => {
       Clipboard.setString(text);
       Alert.alert('Tips', 'Have copied to clipboard: ' + text);
@@ -134,11 +122,11 @@ class TotpPage extends Component {
     const TrashIcon = () => {
       return (
         <View style={styles.icon}>
-          <Icon name="ios-trash-outline" size={30} color="#fff" />
+          <Icon name="ios-trash" size={30} color="#fff" />
         </View>
       );
     };
-    const renderRow = (item) => {
+    const renderItem = ({ item }) => {
       const btns = [{
         component: <TrashIcon />,
         backgroundColor: 'red',
@@ -161,10 +149,10 @@ class TotpPage extends Component {
       );
     };
     const content = () => {
-      if (ds.getRowCount() === 0) {
+      if (!list.length) {
         return (
           <View style={styles.noData}>
-            <Icon name="ios-filing-outline" size={100} color="#999" />
+            <Icon name="ios-filing" size={100} color="#999" />
             <Text style={{ fontSize: 18, color: '#999' }}>
               No Data
             </Text>
@@ -172,11 +160,12 @@ class TotpPage extends Component {
         );
       }
       return (
-        <ListView
-          initialListSize={1}
-          dataSource={ds}
-          renderRow={renderRow}
+        <FlatList
+          data={list}
+          extraData={time}
+          renderItem={renderItem}
           style={styles.listView}
+          keyExtractor={(item) => item.secret}
         />
       );
     };

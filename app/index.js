@@ -1,60 +1,34 @@
 import React from 'react';
-import { Router, Scene } from 'react-native-router-flux';
-import { connect, Provider } from 'react-redux';
-import { StyleSheet } from 'react-native';
+import { Provider } from 'react-redux';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 import store from './store';
 import TotpPage from './pages/TotpPage';
 import ScanPage from './pages/ScanPage';
 
-const RouterWithRedux = connect()(Router);
-
-const getSceneStyle = (props, computedProps) => {
-  const style = {
-    flex: 1,
-    backgroundColor: '#ddd',
-    shadowColor: null,
-    shadowOffset: null,
-    shadowOpacity: null,
-    shadowRadius: null
-  };
-  if (computedProps.isActive) {
-    style.marginTop = computedProps.hideNavBar ? 0 : 64;
-    style.marginBottom = computedProps.hideTabBar ? 0 : 50;
-  }
-  return style;
-};
-
-const styles = StyleSheet.create({
-  navBar: {
-    backgroundColor: '#1582dc'
+const Navigator = createStackNavigator({
+  Home: {
+    screen: TotpPage,
+    navigationOptions: {
+      title: 'Authenticator'
+    }
   },
-  navBarTitle: {
-    color: '#fff'
+  Scan: {
+    screen: ScanPage
+  }
+}, {
+  defaultNavigationOptions: {
+    headerTintColor: '#fff',
+    headerStyle: {
+      backgroundColor: '#1582dc'
+    }
   }
 });
+const AppContainer = createAppContainer(Navigator);
 
 const App = () => {
   return (
     <Provider store={store}>
-      <RouterWithRedux
-        getSceneStyle={getSceneStyle}
-        navigationBarStyle={styles.navBar}
-        titleStyle={styles.navBarTitle}>
-        <Scene key="root">
-          <Scene
-            key="main"
-            title="Authenticator"
-            initial
-            hideTabBar
-            component={TotpPage}
-          />
-          <Scene
-            key="scan"
-            hideTabBar
-            component={ScanPage}
-          />
-        </Scene>
-      </RouterWithRedux>
+      <AppContainer />
     </Provider>
   );
 };

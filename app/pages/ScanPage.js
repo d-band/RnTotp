@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from "react-native";
 import { connect } from 'react-redux';
-import { Actions } from "react-native-router-flux";
-import Camera from 'react-native-camera';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import { RNCamera } from 'react-native-camera';
 import parse from 'url-parse';
 import { decode } from 'botp/base32';
 
@@ -64,21 +62,11 @@ const styles = StyleSheet.create({
 });
 
 class ScanPage extends Component {
-  componentDidMount() {
-    Icon.getImageSource('arrow-left', 32, '#fff').then(img => {
-      Actions.refresh({
-        backButtonImage: img,
-        leftButtonIconStyle: {
-          width: 16
-        }
-      });
-    });
-  }
   barCodeRead({ data }) {
     if (!this.flag) return;
     this.flag = false;
 
-    const { dispatch } = this.props;
+    const { dispatch, navigation } = this.props;
     const { protocol, host, pathname, query } = parse(data, true);
     
     if (protocol === 'otpauth:' && host === 'totp') {
@@ -88,7 +76,7 @@ class ScanPage extends Component {
         type: 'totp/add',
         payload: { name, secret }
       });
-      Actions.pop();
+      navigation.goBack();
     } else {
       this.flag = true;
     }
@@ -97,10 +85,10 @@ class ScanPage extends Component {
     this.flag = true;
     return (
       <View style={styles.container}>
-        <Camera
+        <RNCamera
           style={styles.camera}
           onBarCodeRead={this.barCodeRead.bind(this)}
-          aspect={Camera.constants.Aspect.fill}>
+          barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}>
           <View style={styles.rectWrap}>
             <View style={styles.rect}>
               <View style={[styles.corner, styles.lt]}/>
@@ -109,7 +97,7 @@ class ScanPage extends Component {
               <View style={[styles.corner, styles.rb]}/>
             </View>
           </View>
-        </Camera>
+        </RNCamera>
       </View>
     );
   }
