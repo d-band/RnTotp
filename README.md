@@ -1,6 +1,10 @@
 RnTotp
 ======
 
+**DEPRECATED: This library is deprecated, please use [Takey](https://github.com/jsmartx/Takey).**
+
+## Dependents
+
 - `yax`
 - `botp`
 - `react`
